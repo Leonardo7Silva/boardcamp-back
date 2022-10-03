@@ -72,7 +72,7 @@ async function updateCustomer(req, res){
 
     try{
         const cpfCustomers = await connection.query('SELECT * FROM customers WHERE cpf = $1;',[cpf]);
-        if(cpfCustomers.rows.length > 0 ){
+        if(cpfCustomers.rows.length > 1 ){
             return res.sendStatus(409);
         }
         
