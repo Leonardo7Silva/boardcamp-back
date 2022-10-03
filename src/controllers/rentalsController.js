@@ -26,7 +26,7 @@ async function rentalsList(req, res){
             base = gamesFilter.rows;
         };
 
-        const games = await connection.query(`SELECT * FROM games;`);
+        const games = await connection.query(`SELECT games.*, categories.name AS "categoryName" FROM games JOIN categories ON games."categoryId" = categories.id ;`);
         const customers = await connection.query(`SELECT * FROM customers;`);
         
         const result = base.map(value => value = {
