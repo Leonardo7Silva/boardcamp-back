@@ -1,13 +1,13 @@
 import connection from "../conection/conection.js";
-import {custumersSchema} from "../schemas/schemas.js"
+import {custumersSchema} from "../schemas/schemas.js";
+import dayjs from 'dayjs';
 
 async function customerList(req, res){
     const cpf = req.query.cpf
     
     try{
         if(cpf){
-            const cpfFiltrados = await connection.query(`SELECT * FROM customers 
-            WHERE cpf LIKE '${cpf}%';`);
+            const cpfFiltrados = await connection.query(`SELECT * FROM customers WHERE cpf LIKE $1||'%' ;`, [cpf]);
             return res.send(cpfFiltrados.rows);
         };
         const customers = await connection.query('SELECT * FROM customers;');
@@ -33,6 +33,11 @@ async function customerFilteredList (req, res){
 
 async function addCustomer(req, res){
     const {name, phone, cpf, birthday} = req.body;
+    dayjs('YYYY-MM-DD', true);
+
+    if(!dayjs(birthday).isValid()){
+        return res.status(400).send("insira uma data válida");
+    };
 
     const validation = custumersSchema.validate(req.body, {abortEarly: false});
     if (validation.error){

@@ -1,6 +1,7 @@
 import connection from "../conection/conection.js";
 import dayjs from 'dayjs';
 
+
 async function rentalsList(req, res){
     const customerId = req.query.customerId;
     const gameId = req.query.gameId;
@@ -37,7 +38,6 @@ async function rentalsList(req, res){
         res.send(result);
 
     }catch(err){
-        console.log(gameId)
         res.sendStatus(500);
     }
 };
@@ -51,17 +51,14 @@ async function newRental(req, res){
 
 
     try{
-        console.log("aqui1")
         const customer = await connection.query('SELECT * FROM customers WHERE id = $1;',[customerId]);
         if(customer.rows.length === 0 ){
             return res.sendStatus(400);
         }
-        console.log("aqui2")
         const game = await connection.query('SELECT * FROM games WHERE id = $1;',[gameId]);
         if(game.rows.length === 0 ){
             return res.sendStatus(400);
         }
-        console.log("aqui3")
         const qtdGamesRented = await connection.query('SELECT * FROM rentals WHERE "gameId" = $1;',[gameId]);
 
         const qtd = qtdGamesRented.rows.filter(value => value.returnDate === null);
@@ -69,11 +66,9 @@ async function newRental(req, res){
         if(game.rows[0].stockTotal < qtd.length){
             return res.sendStatus(400);
         }
-        console.log("aqui4")
         await connection.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee")
          VALUES ($1, $2, $3, $4, $5, $6, $7);`
         ,[customerId, gameId, today, daysRented, null, game.rows[0].pricePerDay*daysRented ,null ]);
-        console.log("aqui5")
         res.sendStatus(201);
     }catch(err){
         res.sendStatus(500);

@@ -1,10 +1,13 @@
 import connection from '../conection/conection.js';
-import {categoriSchema} from '../schemas/schemas.js'
+import {categoriSchema} from '../schemas/schemas.js';
+import dayjs from 'dayjs';
+
 
 async function categoryList(req, res){
     try{
         const categories = await connection.query('SELECT * FROM categories;');
         res.send(categories.rows);
+
     }catch(err){
         res.sendStatus(500);
     }

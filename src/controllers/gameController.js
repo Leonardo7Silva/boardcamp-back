@@ -8,7 +8,7 @@ async function gameList(req, res){
     try{
         if(name){
             const gamesFiltrados = await connection.query(`SELECT games.*, categories.name AS "categoryName" FROM games JOIN categories ON games."categoryId" = categories.id 
-            WHERE games.name LIKE '${name}%';`);
+            WHERE games.name LIKE $1||'%' ;`, [name]);
             return res.send(gamesFiltrados.rows);
         };
         const games = await connection.query(
